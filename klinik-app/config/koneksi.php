@@ -1,10 +1,10 @@
 <?php
-// Membaca konfigurasi dari Environment Variables yang disediakan oleh Railway
-$host     = getenv('MYSQLHOST') ?: 'localhost';
-$port     = getenv('MYSQLPORT') ?: '3306';
-$dbname   = getenv('MYSQLDATABASE') ?: 'railway'; // Disesuaikan dengan nama DB di Railway Anda
-$username = getenv('MYSQLUSER') ?: 'root';
-$password = getenv('MYSQLPASSWORD') ?: '';
+// Membaca konfigurasi dari Environment Variables Railway (Menggunakan format underscore yang benar)
+$host     = getenv('MYSQL_HOST') ?: 'localhost';
+$port     = getenv('MYSQL_PORT') ?: '3306';
+$dbname   = getenv('MYSQL_DATABASE') ?: 'railway';
+$username = getenv('MYSQL_USER') ?: 'root';
+$password = getenv('MYSQL_PASSWORD') ?: '';
 
 try {
     // Membuat koneksi PDO dengan menyertakan port
@@ -18,10 +18,10 @@ try {
     // Simpan ke GLOBALS jika file lama Anda membutuhkannya
     $GLOBALS['koneksi'] = $koneksi;
 } catch (PDOException $e) {
-    // Menuliskan detail error yang sebenarnya ke log Railway agar mudah kita lacak nanti
+    // Menuliskan detail error asli ke log internal Railway untuk pelacakan murni
     error_log("Koneksi database gagal: " . $e->getMessage());
     
-    // Menampilkan pesan ramah pengguna di browser
+    // Menampilkan pesan aman ke browser pengguna
     die("Gangguan sistem, silakan coba beberapa saat lagi.");
 }
 ?>
