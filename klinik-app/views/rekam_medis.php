@@ -28,7 +28,7 @@ $error_message = null;
 try {
     if (isset($db)) {
         // =========================================================================
-        // PERBAIKAN FINAL QUERY: Kembali menggunakan record_id dengan LEFT JOIN yang benar
+        // PERBAIKAN FINAL QUERY: Menggunakan nama tabel dengan huruf kapital sesuai server database Linux Railway
         // =========================================================================
         $query = $db->query("SELECT 
                                 p.patient_id,
@@ -43,10 +43,10 @@ try {
                                 IFNULL(tv.riwayat_obat, 'Tidak ada') AS riwayat_obat,
                                 IFNULL(rm.riwayat_penyakit, 'Tidak ada') AS riwayat_penyakit,
                                 IFNULL(rm.alergi_obat_makanan, 'Tidak ada') AS alergi_obat_makanan
-                             FROM rekam_medis rm
-                             INNER JOIN kunjungan k ON rm.visit_id = k.visit_id
-                             INNER JOIN pasien p ON k.patient_id = p.patient_id
-                             LEFT JOIN triage_vital tv ON rm.record_id = tv.record_id
+                             FROM `Rekam_Medis` rm
+                             INNER JOIN `Kunjungan` k ON rm.visit_id = k.visit_id
+                             INNER JOIN `pasien` p ON k.patient_id = p.patient_id
+                             LEFT JOIN `Triage_Vital` tv ON rm.record_id = tv.record_id
                              ORDER BY k.tgl_kunjungan DESC, p.patient_id ASC");
         
         $daftar_rekam_medis = $query->fetchAll(PDO::FETCH_ASSOC);
