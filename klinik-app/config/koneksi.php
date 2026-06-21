@@ -2,7 +2,7 @@
 // Mengisi langsung dengan kredensial INTERNAL Railway (Aman, cepat, dan sinkron)
 $host     = 'mysql.railway.internal'; 
 $port     = '3306';                   
-$dbname   = 'railway';                
+$dbname   = 'praktik-mandiri';                
 $username = 'root';                   
 $password = 'osJUXYkeICZwXLrJiaWzdJoizwMPsYMz'; // Pastikan besar kecilnya huruf sesuai password Anda
 
