@@ -28,7 +28,7 @@ $error_message = null;
 try {
     if (isset($db)) {
         // =========================================================================
-        // PERBAIKAN FINAL QUERY: Mengubah `pasien` menjadi `Pasien` (P Kapital)
+        // PERBAIKAN FINAL QUERY: Menggunakan nama tabel dengan huruf kapital sesuai server database Linux Railway
         // =========================================================================
         $query = $db->query("SELECT 
                                 p.patient_id,
@@ -134,7 +134,8 @@ try {
                                     <?php foreach ($daftar_rekam_medis as $rm): ?>
                                         <tr>
                                             <td><?= htmlspecialchars($rm['patient_id'] ?? '-'); ?></td>
-                                            <td><strong><?= htmlspecialchars($rm['nama_pasien'] ?? '-'); ?></strong></td>
+                                            <!-- PERBAIKAN: Tag strong dihapus agar nama tidak bold -->
+                                            <td><?= htmlspecialchars($rm['nama_pasien'] ?? '-'); ?></td>
                                             <td><?= !empty($rm['tanggal_catatan']) ? date('Y-m-d', strtotime($rm['tanggal_catatan'])) : '-'; ?></td>
                                             <td><?= htmlspecialchars($rm['vital_summary'] ?? '-'); ?></td>
                                             <td><?= htmlspecialchars($rm['tinggi_badan'] ?? '0'); ?> cm</td>
