@@ -100,7 +100,7 @@ if (isset($db)) {
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - Dokter Mandiri</title>
-    <link rel="stylesheet" href="/klinik-app/assets/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
     <div class="app-container">
@@ -256,6 +256,6 @@ if (isset($db)) {
             setTimeout(() => notification.remove(), 2000);
         }
     </script>
-    <script src="/klinik-app/assets/main.js"></script>
+    <script src="../assets/main.js"></script>
 </body>
 </html>
