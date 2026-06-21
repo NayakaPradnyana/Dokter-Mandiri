@@ -26,10 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // 4. Cari data user di database berdasarkan username (Menggunakan huruf kecil: user & role)
+        // 4. Cari data user di database berdasarkan username 
+        // [PERUBAHAN]: Mengubah nama tabel menjadi 'User' dan 'Role' (Kapital) agar sesuai database Linux Railway
         $query = $db->prepare("SELECT u.*, r.nama_role 
-                               FROM user u 
-                               JOIN role r ON u.id_role = r.id_role 
+                               FROM User u 
+                               JOIN Role r ON u.id_role = r.id_role 
                                WHERE u.username = :username");
         $query->bindParam(':username', $username);
         $query->execute();
@@ -63,7 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id(true);
 
                 $_SESSION['username'] = $user['username'];
-                $_SESSION['user_id']  = $user['id_user']; // Disesuaikan ke id_user sesuai database asli
+                // [PERUBAHAN]: Mengubah indeks array menjadi 'user_id' sesuai nama kolom asli di tabel User Anda
+                $_SESSION['user_id']  = $user['user_id']; 
                 $_SESSION['role']     = $user['nama_role']; 
                 
                 // Arahkan otomatis ke halaman Dashboard
@@ -95,3 +97,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: ../views/login.php");
     exit();
 }
+?>
