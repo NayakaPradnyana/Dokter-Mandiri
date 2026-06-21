@@ -116,7 +116,7 @@ try {
                             <?php if (!empty($daftar_resep)): ?>
                                 <?php foreach ($daftar_resep as $resep): ?>
                                     <tr>
-                                        <td><strong><?= htmlspecialchars($resep['nama_obat'] ?? 'Belum ada item obat'); ?></strong></td>
+                                        <td><?= htmlspecialchars($resep['nama_obat'] ?? 'Belum ada item obat'); ?></td>
                                         <td><?= !empty($resep['tanggal_resep']) ? date('Y-m-d', strtotime($resep['tanggal_resep'])) : 'Tanpa Tanggal'; ?></td>
                                         <td><?= htmlspecialchars($resep['catatan_dokter'] ?? '-'); ?></td>
                                         <td>
