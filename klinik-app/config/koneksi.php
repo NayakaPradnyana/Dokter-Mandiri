@@ -1,18 +1,25 @@
 <?php
-// Mengisi langsung dengan kredensial internal Railway Anda
-$host     = 'reseau.proxy.rlwy.net';
-$port     = '43945';
-$dbname   = 'railway';
-$username = 'root';
-$password = 'osJUXYkeICZwXLrJiaWzdJoizwMPsYMz'
+// Mengisi langsung dengan kredensial INTERNAL Railway (Aman, cepat, dan sinkron)
+$host     = 'mysql.railway.internal'; 
+$port     = '3306';                   
+$dbname   = 'railway';                
+$username = 'root';                   
+$password = 'osJUXykeICZwXLrJiaWzdJoizwMPsyMz'; // Pastikan besar kecilnya huruf sesuai password Anda
 
 try {
     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
-    $pdo = new PDO($dsn, $username, $password, [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES   => false,
-    ]);
+    
+    // Menggunakan nama variabel $koneksi agar terbaca oleh proses_login.php Anda
+    $koneksi = new PDO($dsn, $username, $password);
+    
+    // Atur pengaman eror
+    $koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $koneksi->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $koneksi->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    
+    // Daftarkan ke GLOBALS agar bisa di-include lintas folder dengan aman
+    $GLOBALS['koneksi'] = $koneksi;
+
 } catch (PDOException $e) {
     echo "<h2>🚨 Koneksi Database Gagal:</h2>";
     echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
