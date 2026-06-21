@@ -7,9 +7,6 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// Mengambil role pengguna (Default ke 'Staf' jika tidak diatur di session)
-$role_aktif = isset($_SESSION['role']) ? $_SESSION['role'] : 'Staf';
-
 // Sesuaikan path koneksi dengan struktur folder Anda
 include '../config/koneksi.php';
 $db = isset($koneksi) ? $koneksi : $GLOBALS['koneksi'];
@@ -21,8 +18,7 @@ $error_message = null;
 if ($pasien_id) {
     try {
         if (isset($db)) {
-            // Mengambil riwayat medis pasien berdasarkan patient_id
-            // Perbaikan: Mengubah nama tabel menjadi Rekam_Medis dan Triage_Vital sesuai database Linux
+            // PERBAIKAN: Mengubah nama tabel menjadi Rekam_Medis, Kunjungan, dan Triage_Vital sesuai nama asli di database hosting Linux
             $stmt = $db->prepare("SELECT 
                                     rm.tanggal_catatan,
                                     rm.vital_summary,
@@ -35,7 +31,7 @@ if ($pasien_id) {
                                     rm.riwayat_penyakit,
                                     rm.alergi_obat_makanan
                                   FROM `Rekam_Medis` rm 
-                                  JOIN `kunjungan` k ON rm.visit_id = k.visit_id 
+                                  JOIN `Kunjungan` k ON rm.visit_id = k.visit_id 
                                   LEFT JOIN `Triage_Vital` tv ON rm.record_id = tv.record_id
                                   WHERE k.patient_id = :pasien_id 
                                   ORDER BY rm.tanggal_catatan DESC");
@@ -61,94 +57,63 @@ if ($pasien_id) {
     <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">Dokter Mandiri</div>
-            <ul class="sidebar-menu">
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="pasien.php" class="active">Manajemen Pasien</a></li>
-                <li><a href="kunjungan.php">Jadwal / Kunjungan</a></li>
-                <li><a href="rekam_medis.php">Rekam Medis</a></li>
-                
-                <?php if (in_array($role_aktif, ['Admin', 'Doctor', 'Dokter', 'Apoteker'])): ?>
-                    <li><a href="resep.php">Resep & Dispensing</a></li>
-                <?php endif; ?>
-                
-                <li><a href="obat.php">Obat & Stok</a></li>
-                
-                <?php if (in_array($role_aktif, ['Admin', 'Resepsionis'])): ?>
-                    <li><a href="tagihan.php">Tagihan</a></li>
-                <?php endif; ?>
-                
-                <li><a href="laporan.php">Laporan</a></li>
-                
-                <?php if ($role_aktif === 'Admin'): ?>
-                    <li><a href="users.php">User Management</a></li>
-                    <li><a href="utility.php">Backup & Restore</a></li>
-                <?php endif; ?>
-                
-                <li><a href="#" onclick="logout(); return false;">Logout</a></li>
-            </ul>
-        </aside>
-
         <div class="main-content">
             <header class="topbar">
-                <div>Halo, <strong id="userDisplay"><?= htmlspecialchars($_SESSION['username'] ?? ''); ?></strong> <span style="font-size: 0.8rem; color: #7f8c8d;">(<?= htmlspecialchars($role_aktif); ?>)</span></div>
-                <a href="pasien.php" class="btn btn-small" style="background-color: #e74c3c; text-decoration: none; color: white; display: inline-block; padding: 5px 15px; border-radius: 4px;">Back</a>
+                <div>Halo, <strong id="userDisplay">dr. Budi</strong></div>
+                <a href="pasien.php" class="btn btn-small btn-danger">Back</a>
             </header>
 
             <main class="content-area">
                 <?php if ($error_message): ?>
-                    <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-family: sans-serif; border: 1px solid #f5c6cb;">
-                        <strong>Perhatian:</strong> <?= htmlspecialchars($error_message); ?>
+                    <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-family: sans-serif;">
+                        <?= htmlspecialchars($error_message); ?>
                     </div>
                 <?php endif; ?>
 
-                <div class="table-container" style="overflow-x: auto; width: 100%;">
-                    <div class="table-header">
-                        <h2>Riwayat Rekam Medis Pasien</h2>
-                    </div>
-                    <br>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="white-space: nowrap;">Tanggal</th>
-                                <th style="white-space: nowrap;">Vital Summary</th>
-                                <th style="white-space: nowrap;">Tinggi Badan</th>
-                                <th style="white-space: nowrap;">Berat Badan</th>
-                                <th>Anamnesa</th>
-                                <th>Pemeriksaan</th>
-                                <th>Catatan</th>
-                                <th>Riwayat Obat</th>
-                                <th>Riwayat Penyakit</th>
-                                <th>Alergi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($riwayat_pasien)): ?>
-                                <?php foreach ($riwayat_pasien as $riwayat): ?>
-                                    <tr>
-                                        <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['tanggal_catatan'] ?? '-'); ?></td>
-                                        <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['vital_summary'] ?? '-'); ?></td>
-                                        <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['tinggi_badan'] ?? '-'); ?> cm</td>
-                                        <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['berat_badan'] ?? '-'); ?> kg</td>
-                                        <td><?= htmlspecialchars($riwayat['anamnesa'] ?? '-'); ?></td>
-                                        <td><?= htmlspecialchars($riwayat['pemeriksaan_fisik'] ?? '-'); ?></td>
-                                        <td><?= htmlspecialchars($riwayat['catatan_klinis'] ?? '-'); ?></td>
-                                        <td><?= htmlspecialchars($riwayat['riwayat_obat'] ?? 'Tidak ada'); ?></td>
-                                        <td><?= htmlspecialchars($riwayat['riwayat_penyakit'] ?? 'Tidak ada'); ?></td>
-                                        <td><?= htmlspecialchars($riwayat['alergi_obat_makanan'] ?? 'Tidak ada'); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
+                <div class="dashboard-cards">
+                    <div class="table-container" style="overflow-x: auto; width: 100%;">
+                        <h3>Riwayat Pasien</h3><br>
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td colspan="10" style="text-align: center; padding: 30px; color: #7f8c8d; font-style: italic;">
-                                        Belum ada data rekam medis untuk pasien ini.
-                                    </td>
+                                    <th style="white-space: nowrap;">Tanggal</th>
+                                    <th style="white-space: nowrap;">Vital Summary</th>
+                                    <th style="white-space: nowrap;">Tinggi Badan</th>
+                                    <th style="white-space: nowrap;">Berat Badan</th>
+                                    <th>Anamnesa</th>
+                                    <th>Pemeriksaan</th>
+                                    <th>Catatan</th>
+                                    <th>Riwayat Obat</th>
+                                    <th>Riwayat Penyakit</th>
+                                    <th>Alergi</th>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($riwayat_pasien)): ?>
+                                    <?php foreach ($riwayat_pasien as $riwayat): ?>
+                                        <tr>
+                                            <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['tanggal_catatan'] ?? '-'); ?></td>
+                                            <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['vital_summary'] ?? '-'); ?></td>
+                                            <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['tinggi_badan'] ?? '-'); ?> cm</td>
+                                            <td style="white-space: nowrap;"><?= htmlspecialchars($riwayat['berat_badan'] ?? '-'); ?> kg</td>
+                                            <td><?= htmlspecialchars($riwayat['anamnesa'] ?? '-'); ?></td>
+                                            <td><?= htmlspecialchars($riwayat['pemeriksaan_fisik'] ?? '-'); ?></td>
+                                            <td><?= htmlspecialchars($riwayat['catatan_klinis'] ?? '-'); ?></td>
+                                            <td><?= htmlspecialchars($riwayat['riwayat_obat'] ?? 'Tidak ada'); ?></td>
+                                            <td><?= htmlspecialchars($riwayat['riwayat_penyakit'] ?? 'Tidak ada'); ?></td>
+                                            <td><?= htmlspecialchars($riwayat['alergi_obat_makanan'] ?? 'Tidak ada'); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="10" style="text-align: center; padding: 30px; color: #7f8c8d; font-style: italic;">
+                                            Belum ada data rekam medis untuk pasien ini.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </main>
         </div>
@@ -161,8 +126,13 @@ if ($pasien_id) {
 
         function setupUserSession() {
             const userDisplay = document.getElementById("userDisplay");
-            if(userDisplay && userDisplay.textContent.trim() === "") {
-                userDisplay.textContent = localStorage.getItem("userLogin") || "Dokter";
+            const userLogin = localStorage.getItem("userLogin");
+            
+            if (!userLogin) {
+                localStorage.setItem("userLogin", "Pengguna");
+                if (userDisplay) userDisplay.textContent = "Pengguna";
+            } else {
+                if (userDisplay) userDisplay.textContent = userLogin;
             }
         }
 
@@ -171,7 +141,7 @@ if ($pasien_id) {
                 localStorage.removeItem("userLogin");
                 showNotification("Logout berhasil", "success");
                 setTimeout(() => {
-                    window.location.href = "../proses/proses_logout.php";
+                    window.location.href = "login.php";
                 }, 1000);
             }
         }
@@ -186,7 +156,6 @@ if ($pasien_id) {
             notification.style.cssText = `
                 position: fixed; top: 20px; right: 20px; padding: 12px 20px;
                 background-color: ${bgColor}; color: white; border-radius: 4px; z-index: 10000;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             `;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 2000);
