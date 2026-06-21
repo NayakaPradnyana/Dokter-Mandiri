@@ -1,13 +1,12 @@
 <?php
-// Membaca konfigurasi dari Environment Variables Railway menggunakan getenv
-$host     = getenv('MYSQLHOST') ?: 'localhost';
-$port     = getenv('MYSQLPORT') ?: '3306';
-$dbname   = getenv('MYSQLDATABASE') ?: 'railway';
-$username = getenv('MYSQLUSER') ?: 'root';
-$password = getenv('MYSQLPASSWORD') ?: '';
+// Mengisi langsung dengan kredensial internal Railway Anda
+$host     = 'reseau.proxy.rlwy.net';
+$port     = '43945';
+$dbname   = 'railway';
+$username = 'root';
+$password = 'osJUXYkeICZwXLrJiaWzdJoizwMPsYMz'
 
 try {
-    // Membuat koneksi PDO dengan menyertakan port dan charset
     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
     $pdo = new PDO($dsn, $username, $password, [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
