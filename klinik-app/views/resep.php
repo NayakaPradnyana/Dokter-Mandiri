@@ -25,7 +25,6 @@ $error_message = null;
 
 try {
     if (isset($db)) {
-        // [PERUBAHAN]: Mengubah detail_resep menjadi Detail_Resep dan obat menjadi Obat (Kapital)
         $query = $db->query("SELECT 
                                 r.resep_id,
                                 o.nama_obat AS nama_obat,
@@ -39,13 +38,11 @@ try {
                              ORDER BY r.resep_id DESC");
         $daftar_resep = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        // [PERUBAHAN]: Mengubah obat menjadi Obat (Kapital)
         $query_obat = $db->query("SELECT obat_id, nama_obat, fn_cek_stok_obat(obat_id) AS stok_terkini 
                                   FROM Obat 
                                   ORDER BY nama_obat ASC");
         $pilihan_obat = $query_obat->fetchAll(PDO::FETCH_ASSOC);
 
-        // [PERUBAHAN]: Mengubah kunjungan menjadi Kunjungan dan pasien menjadi Pasien (Kapital)
         $query_rm = $db->query("SELECT rm.record_id, p.nama AS nama_pasien, rm.tanggal_catatan 
                                 FROM Rekam_Medis rm
                                 INNER JOIN Kunjungan k ON rm.visit_id = k.visit_id
@@ -58,7 +55,7 @@ try {
     $error_message = "Error MySQL: " . $e->getMessage();
 }
 ?>
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -250,7 +247,6 @@ DOCTYPE html>
             if (confirm("Apakah Anda yakin ingin logout?")) {
                 localStorage.removeItem("userLogin");
                 showNotification("Logout berhasil", "success");
-                // [PERUBAHAN]: Menyamakan jalur logout ke folder proses seperti file dashboard agar session terhapus bersih
                 setTimeout(() => { window.location.href = "../proses/proses_logout.php"; }, 1000);
             }
         }
