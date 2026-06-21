@@ -1,5 +1,5 @@
 <?php
-// Membaca konfigurasi dari Environment Variables Railway (Menggunakan format underscore yang benar)
+// Membaca konfigurasi dari Environment Variables Railway
 $host     = getenv('MYSQL_HOST') ?: 'localhost';
 $port     = getenv('MYSQL_PORT') ?: '3306';
 $dbname   = getenv('MYSQL_DATABASE') ?: 'railway';
