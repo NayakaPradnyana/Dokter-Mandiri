@@ -4,7 +4,7 @@ $host     = 'mysql.railway.internal';
 $port     = '3306';                   
 $dbname   = 'railway';                
 $username = 'root';                   
-$password = 'osJUXykeICZwXLrJiaWzdJoizwMPsyMz'; // Pastikan besar kecilnya huruf sesuai password Anda
+$password = 'osJUXYkeICZwXLrJiaWzdJoizwMPsYMz'; // Pastikan besar kecilnya huruf sesuai password Anda
 
 try {
     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
