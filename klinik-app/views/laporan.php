@@ -29,16 +29,23 @@ $error_message = null;
 
 try {
     if (isset($koneksi)) {
+        /**
+         * =========================================================================
+         * PERBAIKAN: Mengubah nama tabel dari 'laporan_eksternal' menjadi 'Laporan_Eksternal'
+         * untuk mengatasi case-sensitivity di server Linux Railway.
+         * =========================================================================
+         */
+        
         // Ambil daftar jenis laporan secara dinamis
-        $query_jenis = $koneksi->query("SELECT DISTINCT jenis_laporan FROM laporan_eksternal WHERE jenis_laporan IS NOT NULL AND jenis_laporan != ''");
+        $query_jenis = $koneksi->query("SELECT DISTINCT jenis_laporan FROM `Laporan_Eksternal` WHERE jenis_laporan IS NOT NULL AND jenis_laporan != ''");
         $opsi_jenis_laporan = $query_jenis->fetchAll(PDO::FETCH_COLUMN);
 
         // Cek total data asli di database
-        $cek_total = $koneksi->query("SELECT COUNT(*) FROM laporan_eksternal");
+        $cek_total = $koneksi->query("SELECT COUNT(*) FROM `Laporan_Eksternal`");
         $total_data_asli = $cek_total->fetchColumn();
 
         // Kueri pencarian data laporan eksternal
-        $sql = "SELECT * FROM laporan_eksternal WHERE 1=1";
+        $sql = "SELECT * FROM `Laporan_Eksternal` WHERE 1=1";
         $params = [];
 
         if (!empty($jenis_laporan)) {
@@ -237,7 +244,7 @@ try {
         function showNotification(message, type) {
             const notification = document.createElement("div");
             notification.textContent = message;
-            let bgColor = "#27ae60";
+            let bgColor = #27ae60;
             if (type === "error") bgColor = "#dc3545";
             
             notification.style.cssText = `
