@@ -28,7 +28,7 @@ $error_message = null;
 try {
     if (isset($db)) {
         // =========================================================================
-        // PERBAIKAN FINAL QUERY: Menggunakan nama tabel dengan huruf kapital sesuai server database Linux Railway
+        // PERBAIKAN FINAL QUERY: Mengubah `pasien` menjadi `Pasien` (P Kapital)
         // =========================================================================
         $query = $db->query("SELECT 
                                 p.patient_id,
@@ -45,7 +45,7 @@ try {
                                 IFNULL(rm.alergi_obat_makanan, 'Tidak ada') AS alergi_obat_makanan
                              FROM `Rekam_Medis` rm
                              INNER JOIN `Kunjungan` k ON rm.visit_id = k.visit_id
-                             INNER JOIN `pasien` p ON k.patient_id = p.patient_id
+                             INNER JOIN `Pasien` p ON k.patient_id = p.patient_id
                              LEFT JOIN `Triage_Vital` tv ON rm.record_id = tv.record_id
                              ORDER BY k.tgl_kunjungan DESC, p.patient_id ASC");
         
