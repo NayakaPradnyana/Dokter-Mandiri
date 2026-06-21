@@ -26,8 +26,9 @@ $error_message = null;
 if (isset($db)) {
     try {
         /**
-                  * =========================================================================
+         * =========================================================================
          * UTAMA: Menggunakan View v_dashboard_keuangan_lunas & Tabel Real-time
+         * PERBAIKAN: Mengubah nama tabel ke Huruf Kapital (Tagihan, Kunjungan, Pasien, Detail_Tagihan)
          * =========================================================================
          */
         $query = $db->query("
@@ -53,10 +54,10 @@ if (isset($db)) {
                 t.diskon,
                 IFNULL(SUM(dt.harga_satuan) - t.diskon, 0) AS total_akhir,
                 'Belum Lunas' AS status
-            FROM `tagihan` t
-            JOIN `kunjungan` k ON t.visit_id = k.visit_id
-            JOIN `pasien` p ON k.patient_id = p.patient_id
-            LEFT JOIN `detail_tagihan` dt ON t.tagihan_id = dt.tagihan_id
+            FROM `Tagihan` t
+            JOIN `Kunjungan` k ON t.visit_id = k.visit_id
+            JOIN `Pasien` p ON k.patient_id = p.patient_id
+            LEFT JOIN `Detail_Tagihan` dt ON t.tagihan_id = dt.tagihan_id
             WHERE t.status = 'Belum Lunas'
             GROUP BY t.tagihan_id, k.tgl_kunjungan, p.nama, t.diskon
             
@@ -75,7 +76,7 @@ if (isset($db)) {
             /**
              * =========================================================================
              * FALLBACK/CADANGAN: Jika View di atas eror, ambil data Belum Lunas saja 
-             * agar Kasir TETAP BISA bekerja mengeksekusi pembayaran pasien.
+             * PERBAIKAN: Mengubah nama tabel ke Huruf Kapital (Tagihan, Kunjungan, Pasien, Detail_Tagihan)
              * =========================================================================
              */
             $query_fallback = $db->query("
@@ -87,10 +88,10 @@ if (isset($db)) {
                     t.diskon,
                     IFNULL(SUM(dt.harga_satuan) - t.diskon, 0) AS total_akhir,
                     'Belum Lunas' AS status
-                FROM `tagihan` t
-                JOIN `kunjungan` k ON t.visit_id = k.visit_id
-                JOIN `pasien` p ON k.patient_id = p.patient_id
-                LEFT JOIN `detail_tagihan` dt ON t.tagihan_id = dt.tagihan_id
+                FROM `Tagihan` t
+                JOIN `Kunjungan` k ON t.visit_id = k.visit_id
+                JOIN `Pasien` p ON k.patient_id = p.patient_id
+                LEFT JOIN `Detail_Tagihan` dt ON t.tagihan_id = dt.tagihan_id
                 WHERE t.status = 'Belum Lunas'
                 GROUP BY t.tagihan_id, k.tgl_kunjungan, p.nama, t.diskon
                 ORDER BY k.tgl_kunjungan DESC
