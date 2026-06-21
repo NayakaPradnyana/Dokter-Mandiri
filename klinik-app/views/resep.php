@@ -25,7 +25,7 @@ $error_message = null;
 
 try {
     if (isset($db)) {
-        // Query tetap mengambil data resep secara aman dengan LEFT JOIN
+        // [PERUBAHAN]: Mengubah detail_resep menjadi Detail_Resep dan obat menjadi Obat (Kapital)
         $query = $db->query("SELECT 
                                 r.resep_id,
                                 o.nama_obat AS nama_obat,
@@ -34,22 +34,22 @@ try {
                                 r.status_resep AS status_resep 
                              FROM Resep r
                              LEFT JOIN Rekam_Medis rm ON r.record_id = rm.record_id
-                             LEFT JOIN detail_resep dr ON r.resep_id = dr.resep_id
-                             LEFT JOIN obat o ON dr.obat_id = o.obat_id
+                             LEFT JOIN Detail_Resep dr ON r.resep_id = dr.resep_id
+                             LEFT JOIN Obat o ON dr.obat_id = o.obat_id
                              ORDER BY r.resep_id DESC");
         $daftar_resep = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        // Ambil master obat
+        // [PERUBAHAN]: Mengubah obat menjadi Obat (Kapital)
         $query_obat = $db->query("SELECT obat_id, nama_obat, fn_cek_stok_obat(obat_id) AS stok_terkini 
-                                  FROM obat 
+                                  FROM Obat 
                                   ORDER BY nama_obat ASC");
         $pilihan_obat = $query_obat->fetchAll(PDO::FETCH_ASSOC);
 
-        // Ambil data Rekam Medis aktif untuk dipasangkan ke Resep di form modal
+        // [PERUBAHAN]: Mengubah kunjungan menjadi Kunjungan dan pasien menjadi Pasien (Kapital)
         $query_rm = $db->query("SELECT rm.record_id, p.nama AS nama_pasien, rm.tanggal_catatan 
                                 FROM Rekam_Medis rm
-                                INNER JOIN kunjungan k ON rm.visit_id = k.visit_id
-                                INNER JOIN pasien p ON k.patient_id = p.patient_id
+                                INNER JOIN Kunjungan k ON rm.visit_id = k.visit_id
+                                INNER JOIN Pasien p ON k.patient_id = p.patient_id
                                 ORDER BY rm.record_id DESC");
         $pilihan_rm = $query_rm->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -58,12 +58,12 @@ try {
     $error_message = "Error MySQL: " . $e->getMessage();
 }
 ?>
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Resep & Dispensing - Dokter Mandiri</title>
-    <link rel="stylesheet" href="../Assets/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
     <div class="app-container">
@@ -250,7 +250,8 @@ try {
             if (confirm("Apakah Anda yakin ingin logout?")) {
                 localStorage.removeItem("userLogin");
                 showNotification("Logout berhasil", "success");
-                setTimeout(() => { window.location.href = "login.php"; }, 1000);
+                // [PERUBAHAN]: Menyamakan jalur logout ke folder proses seperti file dashboard agar session terhapus bersih
+                setTimeout(() => { window.location.href = "../proses/proses_logout.php"; }, 1000);
             }
         }
 
